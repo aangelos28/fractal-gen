@@ -70,7 +70,7 @@ def __julia_cpu(pixels, width, height, max_iterations, cx, cy, color_hue, color_
             z = complex(1.5 * (x - width / 2) / (0.5 * width), 1.0 * (y - height / 2) / (0.5 * height))
 
             iterations = 0
-            while (z.real * z.real + z.imag * z.imag < 4.0) and iterations < max_iterations:
+            while (abs(z) < 4.0) and iterations < max_iterations:
                 z = z * z + c
                 iterations += 1
 
@@ -112,7 +112,7 @@ def __julia_cuda(pixels, width, height, max_iterations, cx, cy, color_hue, color
         z = complex(1.5 * (x - width / 2) / (0.5 * width), 1.0 * (y - height / 2) / (0.5 * height))
 
         iterations = 0
-        while (z.real * z.real + z.imag * z.imag < 4.0) and iterations < max_iterations:
+        while (abs(z) < 4.0) and iterations < max_iterations:
             z = z * z + c
             iterations += 1
 

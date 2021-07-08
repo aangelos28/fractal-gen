@@ -77,7 +77,7 @@ def __mandelbrot_cpu(pixels, width, height, max_iterations, re_start, re_end, im
             z = 0.0j
 
             iterations = 0
-            while (z.real * z.real + z.imag * z.imag < 4.0) and iterations < max_iterations:
+            while (abs(z) < 4.0) and iterations < max_iterations:
                 z = z * z + c
                 iterations += 1
 
@@ -122,7 +122,7 @@ def __mandelbrot_cuda(pixels, width, height, max_iterations, re_start, re_end, i
         z = 0.0j
 
         iterations = 0
-        while (z.real * z.real + z.imag * z.imag < 4.0) and iterations < max_iterations:
+        while (abs(z) < 4.0) and iterations < max_iterations:
             z = z * z + c
             iterations += 1
 
