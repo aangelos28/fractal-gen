@@ -73,8 +73,3 @@ def __julia_cuda(pixels, width, height, max_iterations, cx, cy, color_hue, color
             pixels[x, y, 0] = 255 * (color_hue / 360)
             pixels[x, y, 1] = 255 * color_saturation
             pixels[x, y, 2] = 255 * (color_intensity * smooth_iterations / max_iterations)
-
-
-mandel_pixels, mandel_image = compute_julia(width=1920, height=1080, max_iterations=400, cx=-0.4, cy=0.60,
-                                            color_hue=204, color_saturation=0.64, color_intensity=10, use_gpu=True)
-mandel_image.save("julia.png")

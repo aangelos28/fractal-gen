@@ -6,7 +6,7 @@ from numba import cuda, prange
 from PIL import Image as im
 
 
-def compute_mandelbrot(width=1200, height=800, max_iterations=50, re_start=-2, re_end=1, im_start=-1, im_end=1,
+def compute_mandelbrot(width=1200, height=800, max_iterations=50, re_start=-2.0, re_end=1.0, im_start=-1.0, im_end=1.0,
                        color_hue=204, color_saturation=0.64, color_intensity=1.0, use_gpu=True):
     pixels = np.zeros([width, height, 3], dtype=np.uint8)
 
@@ -77,8 +77,3 @@ def __mandelbrot_cuda(pixels, width, height, max_iterations, re_start, re_end, i
             pixels[x, y, 0] = 255 * (color_hue / 360)
             pixels[x, y, 1] = 255 * color_saturation
             pixels[x, y, 2] = 255 * (color_intensity * smooth_iterations / max_iterations)
-
-
-mandel_pixels, mandel_image = compute_mandelbrot(width=1920, height=1080, max_iterations=80, color_hue=204,
-                                                 color_saturation=1, color_intensity=1.5, use_gpu=True)
-mandel_image.save("mandelbrot.png")
