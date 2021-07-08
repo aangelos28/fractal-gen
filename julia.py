@@ -1,3 +1,7 @@
+"""
+Methods for generating the julia fractal.
+"""
+
 import math
 
 import numba
@@ -8,6 +12,24 @@ from PIL import Image as im
 
 def generate_julia(width=1200, height=800, max_iterations=50, cx=-0.7, cy=0.27015, color_hue=204, color_saturation=0.64,
                    color_intensity=1.0, use_gpu=True):
+    """
+    Generate a julia visualization.
+
+    Args:
+        width: Width of the image in pixels
+        height: Height of the image in pixels
+        max_iterations: Max iterations for orbital escape
+        cx: CX value
+        cy: CY value
+        color_hue: Hue of the color used for the visualization
+        color_saturation: Saturation of the color used for the visualization
+        color_intensity: Intensity of the color used for the visualization
+        use_gpu: Whether to use CUDA to compute the fractal
+
+    Returns:
+        Pixels of the visualization and a pillow image
+    """
+
     pixels = np.zeros([width, height, 3], dtype=np.uint8)
 
     if use_gpu:
@@ -26,6 +48,22 @@ def generate_julia(width=1200, height=800, max_iterations=50, cx=-0.7, cy=0.2701
 
 @numba.jit(nopython=True, parallel=True)
 def __julia_cpu(pixels, width, height, max_iterations, cx, cy, color_hue, color_saturation, color_intensity):
+    """
+    Generate a julia visualization using multi-threading.
+
+    Args:
+        pixels: Reference to the RGB pixel array
+        width: Width of the image in pixels
+        height: Height of the image in pixels
+        max_iterations: Max iterations for orbital escape
+        cx: CX value
+        cy: CY value
+        color_hue: Hue of the color used for the visualization
+        color_saturation: Saturation of the color used for the visualization
+        color_intensity: Intensity of the color used for the visualization
+        use_gpu: Whether to use CUDA to compute the fractal
+    """
+
     for x in prange(0, width):
         for y in prange(0, height):
             c = complex(cx, cy)
@@ -51,6 +89,22 @@ def __julia_cpu(pixels, width, height, max_iterations, cx, cy, color_hue, color_
 
 @cuda.jit
 def __julia_cuda(pixels, width, height, max_iterations, cx, cy, color_hue, color_saturation, color_intensity):
+    """
+    Generate a julia visualization using CUDA.
+
+    Args:
+        pixels: Reference to the RGB pixel array
+        width: Width of the image in pixels
+        height: Height of the image in pixels
+        max_iterations: Max iterations for orbital escape
+        cx: CX value
+        cy: CY value
+        color_hue: Hue of the color used for the visualization
+        color_saturation: Saturation of the color used for the visualization
+        color_intensity: Intensity of the color used for the visualization
+        use_gpu: Whether to use CUDA to compute the fractal
+    """
+
     x, y = cuda.grid(2)
 
     if x < pixels.shape[0] and y < pixels.shape[1]:

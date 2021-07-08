@@ -26,10 +26,10 @@ def generate_mandelbrot(width=1200, height=800, max_iterations=50, re_start=-2.0
         color_hue: Hue of the color used for the visualization
         color_saturation: Saturation of the color used for the visualization
         color_intensity: Intensity of the color used for the visualization
-        use_gpu: Whether to use CUDA to compute the mandelbrot
+        use_gpu: Whether to use CUDA to compute the fractal
 
     Returns:
-        Pixels of the visualization and a Pillow image
+        Pixels of the visualization and a pillow image
     """
 
     pixels = np.zeros([width, height, 3], dtype=np.uint8)
