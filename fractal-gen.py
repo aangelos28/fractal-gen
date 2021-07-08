@@ -111,22 +111,22 @@ def generate_fractal(args):
 
     if args.fractal == "mandelbrot":
         # Generate mandelbrot fractal
-        mandel_pixels, mandel_image = compute_mandelbrot(width=args.width, height=args.height,
-                                                         max_iterations=args.max_iterations,
-                                                         re_start=args.re_start, re_end=args.re_end,
-                                                         im_start=args.im_start, im_end=args.im_end,
-                                                         color_hue=args.color_hue,
-                                                         color_saturation=args.color_saturation,
-                                                         color_intensity=args.color_intensity, use_gpu=args.use_gpu)
+        _, mandel_image = compute_mandelbrot(width=args.width, height=args.height,
+                                             max_iterations=args.max_iterations,
+                                             re_start=args.re_start, re_end=args.re_end,
+                                             im_start=args.im_start, im_end=args.im_end,
+                                             color_hue=args.color_hue,
+                                             color_saturation=args.color_saturation,
+                                             color_intensity=args.color_intensity, use_gpu=args.use_gpu)
 
         mandel_image.save(args.output_image_path)
     elif args.fractal == "julia":
         # Generate julia fractal
-        julia_pixels, julia_image = compute_julia(width=args.width, height=args.height,
-                                                  max_iterations=args.max_iterations,
-                                                  cx=args.cx, cy=args.cy, color_hue=args.color_hue,
-                                                  color_saturation=args.color_saturation,
-                                                  color_intensity=args.color_intensity, use_gpu=args.use_gpu)
+        _, julia_image = compute_julia(width=args.width, height=args.height,
+                                       max_iterations=args.max_iterations,
+                                       cx=args.cx, cy=args.cy, color_hue=args.color_hue,
+                                       color_saturation=args.color_saturation,
+                                       color_intensity=args.color_intensity, use_gpu=args.use_gpu)
 
         julia_image.save(args.output_image_path)
 
