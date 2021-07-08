@@ -2,7 +2,7 @@
 
 import argparse
 from mandelbrot import generate_mandelbrot
-from julia import compute_julia
+from julia import generate_julia
 
 
 def parse_cli_ags():
@@ -122,11 +122,11 @@ def generate_fractal(args):
         mandel_image.save(args.output_image_path)
     elif args.fractal == "julia":
         # Generate julia fractal
-        _, julia_image = compute_julia(width=args.width, height=args.height,
-                                       max_iterations=args.max_iterations,
-                                       cx=args.cx, cy=args.cy, color_hue=args.color_hue,
-                                       color_saturation=args.color_saturation,
-                                       color_intensity=args.color_intensity, use_gpu=args.use_gpu)
+        _, julia_image = generate_julia(width=args.width, height=args.height,
+                                        max_iterations=args.max_iterations,
+                                        cx=args.cx, cy=args.cy, color_hue=args.color_hue,
+                                        color_saturation=args.color_saturation,
+                                        color_intensity=args.color_intensity, use_gpu=args.use_gpu)
 
         julia_image.save(args.output_image_path)
 

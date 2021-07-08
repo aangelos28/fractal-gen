@@ -6,8 +6,8 @@ from numba import cuda, prange
 from PIL import Image as im
 
 
-def compute_julia(width=1200, height=800, max_iterations=50, cx=-0.7, cy=0.27015, color_hue=204, color_saturation=0.64,
-                  color_intensity=1.0, use_gpu=True):
+def generate_julia(width=1200, height=800, max_iterations=50, cx=-0.7, cy=0.27015, color_hue=204, color_saturation=0.64,
+                   color_intensity=1.0, use_gpu=True):
     pixels = np.zeros([width, height, 3], dtype=np.uint8)
 
     if use_gpu:
