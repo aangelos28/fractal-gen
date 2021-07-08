@@ -1,5 +1,6 @@
 .vscode/
 .idea/
 venv/
+__pycahce__/
 *.png
 *.jpg
