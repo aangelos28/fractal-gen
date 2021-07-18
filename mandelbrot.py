@@ -35,14 +35,14 @@ def generate_mandelbrot(width=1200, height=800, max_iterations=50, re_start=-2.0
     pixels = np.zeros([width, height, 3], dtype=np.uint8)
 
     if use_gpu:
-        threadsperblock = (16, 16)
-        blockspergrid_x = math.ceil(pixels.shape[0] / threadsperblock[0])
-        blockspergrid_y = math.ceil(pixels.shape[1] / threadsperblock[1])
-        blockspergrid = (blockspergrid_x, blockspergrid_y)
+        threads_per_block = (16, 16)
+        blocks_per_grid_x = math.ceil(pixels.shape[0] / threads_per_block[0])
+        blocks_per_grid_y = math.ceil(pixels.shape[1] / threads_per_block[1])
+        blocks_per_grid = (blocks_per_grid_x, blocks_per_grid_y)
 
-        __mandelbrot_cuda[blockspergrid, threadsperblock](pixels, width, height, max_iterations, re_start, re_end,
-                                                          im_start, im_end, color_hue, color_saturation,
-                                                          color_intensity)
+        __mandelbrot_cuda[blocks_per_grid, threads_per_block](pixels, width, height, max_iterations, re_start, re_end,
+                                                              im_start, im_end, color_hue, color_saturation,
+                                                              color_intensity)
     else:
         __mandelbrot_cpu(pixels, width, height, max_iterations, re_start, re_end, im_start, im_end, color_hue,
                          color_saturation, color_intensity)
@@ -68,7 +68,6 @@ def __mandelbrot_cpu(pixels, width, height, max_iterations, re_start, re_end, im
         color_hue: Hue of the color used for the visualization
         color_saturation: Saturation of the color used for the visualization
         color_intensity: Intensity of the color used for the visualization
-        use_gpu: Whether to use CUDA to compute the mandelbrot
     """
 
     for x in prange(0, width):
@@ -112,7 +111,6 @@ def __mandelbrot_cuda(pixels, width, height, max_iterations, re_start, re_end, i
         color_hue: Hue of the color used for the visualization
         color_saturation: Saturation of the color used for the visualization
         color_intensity: Intensity of the color used for the visualization
-        use_gpu: Whether to use CUDA to compute the mandelbrot
     """
 
     x, y = cuda.grid(2)

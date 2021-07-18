@@ -1,5 +1,5 @@
 """
-Methods for generating the julia fractal.
+Methods for generating the burning ship fractal.
 """
 
 import math
@@ -10,17 +10,19 @@ from numba import cuda, prange
 from PIL import Image as im
 
 
-def generate_julia(width=1200, height=800, max_iterations=50, cx=-0.7, cy=0.27015, color_hue=204, color_saturation=0.64,
-                   color_intensity=1.0, use_gpu=True):
+def generate_burning_ship(width=1200, height=800, max_iterations=50, re_start=-2.0, re_end=1.0, im_start=-1.0,
+                          im_end=1.0, color_hue=204, color_saturation=0.64, color_intensity=1.0, use_gpu=True):
     """
-    Generate a julia visualization.
+    Generate a burning ship visualization.
 
     Args:
         width: Width of the image in pixels
         height: Height of the image in pixels
         max_iterations: Max iterations for orbital escape
-        cx: CX value
-        cy: CY value
+        re_start: Minimum value of the real complex plane
+        re_end: Maximum value of the real complex plane
+        im_start: Minimum value of the imaginary complex plane
+        im_end: Maximum value of the imaginary complex plane
         color_hue: Hue of the color used for the visualization
         color_saturation: Saturation of the color used for the visualization
         color_intensity: Intensity of the color used for the visualization
@@ -38,26 +40,31 @@ def generate_julia(width=1200, height=800, max_iterations=50, cx=-0.7, cy=0.2701
         blocks_per_grid_y = math.ceil(pixels.shape[1] / threads_per_block[1])
         blocks_per_grid = (blocks_per_grid_x, blocks_per_grid_y)
 
-        __julia_cuda[blocks_per_grid, threads_per_block](pixels, width, height, max_iterations, cx, cy, color_hue,
-                                                         color_saturation, color_intensity)
+        __burning_ship_cuda[blocks_per_grid, threads_per_block](pixels, width, height, max_iterations, re_start, re_end,
+                                                              im_start, im_end, color_hue, color_saturation,
+                                                              color_intensity)
     else:
-        __julia_cpu(pixels, width, height, max_iterations, cx, cy, color_hue, color_saturation, color_intensity)
+        __burning_ship_cpu(pixels, width, height, max_iterations, re_start, re_end, im_start, im_end, color_hue,
+                           color_saturation, color_intensity)
 
     return pixels, im.fromarray(pixels.transpose((1, 0, 2)), 'HSV').convert('RGB')
 
 
 @numba.jit(nopython=True, parallel=True)
-def __julia_cpu(pixels, width, height, max_iterations, cx, cy, color_hue, color_saturation, color_intensity):
+def __burning_ship_cpu(pixels, width, height, max_iterations, re_start, re_end, im_start, im_end, color_hue,
+                       color_saturation, color_intensity):
     """
-    Generate a julia visualization using multi-threading.
+    Generate a burning ship visualization using multi-threading.
 
     Args:
         pixels: Reference to the RGB pixel array
         width: Width of the image in pixels
         height: Height of the image in pixels
         max_iterations: Max iterations for orbital escape
-        cx: CX value
-        cy: CY value
+        re_start: Minimum value of the real complex plane
+        re_end: Maximum value of the real complex plane
+        im_start: Minimum value of the imaginary complex plane
+        im_end: Maximum value of the imaginary complex plane
         color_hue: Hue of the color used for the visualization
         color_saturation: Saturation of the color used for the visualization
         color_intensity: Intensity of the color used for the visualization
@@ -65,12 +72,13 @@ def __julia_cpu(pixels, width, height, max_iterations, cx, cy, color_hue, color_
 
     for x in prange(0, width):
         for y in prange(0, height):
-            c = complex(cx, cy)
-            z = complex(1.5 * (x - width / 2) / (0.5 * width), 1.0 * (y - height / 2) / (0.5 * height))
+            c = complex((re_start + (x / width) * (re_end - re_start)), (im_start + (y / height) * (im_end - im_start)))
+            z = 0.0j
 
             iterations = 0
             while (abs(z) < 4.0) and iterations < max_iterations:
-                z = z * z + c
+                abs_z = complex(abs(z.real), abs(z.imag))
+                z = abs_z * abs_z + c
                 iterations += 1
 
             # Color smoothing
@@ -87,17 +95,20 @@ def __julia_cpu(pixels, width, height, max_iterations, cx, cy, color_hue, color_
 
 
 @cuda.jit
-def __julia_cuda(pixels, width, height, max_iterations, cx, cy, color_hue, color_saturation, color_intensity):
+def __burning_ship_cuda(pixels, width, height, max_iterations, re_start, re_end, im_start, im_end, color_hue,
+                        color_saturation, color_intensity):
     """
-    Generate a julia visualization using CUDA.
+    Generate a burning ship visualization using CUDA.
 
     Args:
         pixels: Reference to the RGB pixel array
         width: Width of the image in pixels
         height: Height of the image in pixels
         max_iterations: Max iterations for orbital escape
-        cx: CX value
-        cy: CY value
+        re_start: Minimum value of the real complex plane
+        re_end: Maximum value of the real complex plane
+        im_start: Minimum value of the imaginary complex plane
+        im_end: Maximum value of the imaginary complex plane
         color_hue: Hue of the color used for the visualization
         color_saturation: Saturation of the color used for the visualization
         color_intensity: Intensity of the color used for the visualization
@@ -106,12 +117,13 @@ def __julia_cuda(pixels, width, height, max_iterations, cx, cy, color_hue, color
     x, y = cuda.grid(2)
 
     if x < pixels.shape[0] and y < pixels.shape[1]:
-        c = complex(cx, cy)
-        z = complex(1.5 * (x - width / 2) / (0.5 * width), 1.0 * (y - height / 2) / (0.5 * height))
+        c = complex(re_start + (x / width) * (re_end - re_start), im_start + (y / height) * (im_end - im_start))
+        z = 0.0j
 
         iterations = 0
         while (abs(z) < 4.0) and iterations < max_iterations:
-            z = z * z + c
+            abs_z = complex(abs(z.real), abs(z.imag))
+            z = abs_z * abs_z + c
             iterations += 1
 
         # Color smoothing
