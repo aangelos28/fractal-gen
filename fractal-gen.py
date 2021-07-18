@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 
-from cli_arguments import *
-from mandelbrot import generate_mandelbrot
-from julia import generate_julia
-from burning_ship import generate_burning_ship
+from interface.cli import *
+from fractals.mandelbrot import generate_mandelbrot
+from fractals.julia import generate_julia
+from fractals.burning_ship import generate_burning_ship
 
 console = Console()
 
