@@ -2,7 +2,7 @@ import argparse
 
 from cli.common import display_header, display_cli_args, console
 from fractals.BurningShip import BurningShip
-from fractals.common import Plane2d, HsvColor, ComplexPlane
+from fractals.common import Plane2d, HsvColor, ComplexPlane, image_rgb_from_hsv
 
 
 def parse_cli_args():
@@ -63,7 +63,7 @@ def main():
     burning_ship = BurningShip(plane, complex_plane, args.max_iterations, hsv_color)
 
     console.print("Generating Burning Ship fractal...", style="yellow")
-    burning_ship_image = burning_ship.compute(use_gpu=True)
+    burning_ship_image = image_rgb_from_hsv(burning_ship.compute(use_gpu=True))
 
     console.print("Saving output image...", style="yellow")
     burning_ship_image.save(args.output_image_path)

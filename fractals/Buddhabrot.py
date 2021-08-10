@@ -1,5 +1,4 @@
 import numpy as np
-from PIL import Image as im
 from numba.cuda.random import create_xoroshiro128p_states
 
 from fractals.MandelbrotBase import MandelbrotBase
@@ -10,7 +9,7 @@ class Buddhabrot(MandelbrotBase):
     def __init__(self, plane, complex_plane, max_iterations, hsv_color):
         super().__init__(plane, complex_plane, max_iterations, hsv_color)
 
-    def compute(self, total_samples=10000000) -> im:
+    def compute(self, total_samples=10000000):
         counters = np.zeros([self._plane.width, self._plane.height], dtype=np.uint16)
 
         print("Computing buddhabrot...")
@@ -23,9 +22,9 @@ class Buddhabrot(MandelbrotBase):
         draw_buddhabrot(pixels, counters, self._plane.width, self._plane.height, self._hsv_color.hue,
                         self._hsv_color.saturation, self._hsv_color.intensity)
 
-        return im.fromarray(pixels.transpose((1, 0, 2)), 'HSV').convert('RGB')
+        return pixels
 
-    def compute_gpu(self, samples_per_thread=128) -> im:
+    def compute_gpu(self, samples_per_thread=128):
         counters = np.zeros([self._plane.width, self._plane.height], dtype=np.uint16)
 
         threads_per_block = 256
@@ -46,4 +45,4 @@ class Buddhabrot(MandelbrotBase):
         draw_buddhabrot(pixels, counters, self._plane.width, self._plane.height, self._hsv_color.hue,
                         self._hsv_color.saturation, self._hsv_color.intensity)
 
-        return im.fromarray(pixels.transpose((1, 0, 2)), 'HSV').convert('RGB')
+        return pixels

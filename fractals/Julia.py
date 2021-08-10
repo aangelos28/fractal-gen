@@ -1,7 +1,6 @@
 import math
 
 import numpy as np
-from PIL import Image as im
 
 from fractals.MandelbrotBase import MandelbrotBase
 from fractals.kernels.julia import julia_cuda, julia
@@ -29,7 +28,7 @@ class Julia(MandelbrotBase):
         self._cx = cx
         self._cy = cy
 
-    def compute(self, use_gpu=True) -> im:
+    def compute(self, use_gpu=True):
         pixels = np.zeros([self._plane.width, self._plane.height, 3], dtype=np.uint8)
 
         if use_gpu:
@@ -57,4 +56,4 @@ class Julia(MandelbrotBase):
                   self.cx, self.cy,
                   self.hsv_color.hue, self.hsv_color.saturation, self.hsv_color.intensity)
 
-        return im.fromarray(pixels.transpose((1, 0, 2)), 'HSV').convert('RGB')
+        return pixels

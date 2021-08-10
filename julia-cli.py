@@ -2,7 +2,7 @@ import argparse
 
 from cli.common import display_header, display_cli_args, console
 from fractals.Julia import Julia
-from fractals.common import Plane2d, HsvColor, ComplexPlane
+from fractals.common import Plane2d, HsvColor, ComplexPlane, image_rgb_from_hsv
 
 
 def parse_cli_args():
@@ -72,7 +72,7 @@ def main():
     julia = Julia(plane, complex_plane, args.max_iterations, hsv_color, args.cx, args.cy)
 
     console.print("Generating Julia fractal...", style="yellow")
-    julia_image = julia.compute(use_gpu=args.use_gpu)
+    julia_image = image_rgb_from_hsv(julia.compute(use_gpu=args.use_gpu))
 
     console.print("Saving output image...", style="yellow")
     julia_image.save(args.output_image_path)

@@ -2,7 +2,7 @@ import argparse
 
 from cli.common import display_header, display_cli_args, console
 from fractals.Buddhabrot import Buddhabrot
-from fractals.common import Plane2d, HsvColor, ComplexPlane
+from fractals.common import Plane2d, HsvColor, ComplexPlane, image_rgb_from_hsv
 
 
 def parse_cli_args():
@@ -72,9 +72,9 @@ def main():
 
     console.print("Generating Buddhabrot fractal...", style="yellow")
     if args.use_gpu:
-        buddhabrot_image = buddhabrot.compute_gpu(args.samples_per_thread)
+        buddhabrot_image = image_rgb_from_hsv(buddhabrot.compute_gpu(args.samples_per_thread))
     else:
-        buddhabrot_image = buddhabrot.compute(args.total_samples)
+        buddhabrot_image = image_rgb_from_hsv(buddhabrot.compute(args.total_samples))
 
     console.print("Saving output image...", style="yellow")
     buddhabrot_image.save(args.output_image_path)

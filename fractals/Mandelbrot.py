@@ -1,7 +1,6 @@
 import math
 
 import numpy as np
-from PIL import Image as im
 
 from fractals.MandelbrotBase import MandelbrotBase
 from fractals.kernels.mandelbrot import mandelbrot_cuda, mandelbrot
@@ -11,7 +10,7 @@ class Mandelbrot(MandelbrotBase):
     def __init__(self, plane, complex_plane, max_iterations, hsv_color):
         super().__init__(plane, complex_plane, max_iterations, hsv_color)
 
-    def compute(self, use_gpu=True) -> im:
+    def compute(self, use_gpu=True):
         pixels = np.zeros([self._plane.width, self._plane.height, 3], dtype=np.uint8)
 
         if use_gpu:
@@ -35,4 +34,4 @@ class Mandelbrot(MandelbrotBase):
                        self._complex_plane.imag_begin, self._complex_plane.imag_end,
                        self._hsv_color.hue, self._hsv_color.saturation, self._hsv_color.intensity)
 
-        return im.fromarray(pixels.transpose((1, 0, 2)), 'HSV').convert('RGB')
+        return pixels

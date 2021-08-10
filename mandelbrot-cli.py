@@ -2,7 +2,7 @@ import argparse
 
 from cli.common import display_header, display_cli_args, console
 from fractals.Mandelbrot import Mandelbrot
-from fractals.common import Plane2d, HsvColor, ComplexPlane
+from fractals.common import Plane2d, HsvColor, ComplexPlane, image_rgb_from_hsv
 
 
 def parse_cli_args():
@@ -63,7 +63,7 @@ def main():
     mandelbrot = Mandelbrot(plane, complex_plane, args.max_iterations, hsv_color)
 
     console.print("Generating Mandelbrot fractal...", style="yellow")
-    mandelbrot_image = mandelbrot.compute(use_gpu=args.use_gpu)
+    mandelbrot_image = image_rgb_from_hsv(mandelbrot.compute(use_gpu=args.use_gpu))
 
     console.print("Saving output image...", style="yellow")
     mandelbrot_image.save(args.output_image_path)
