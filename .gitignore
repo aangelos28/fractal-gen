@@ -3,5 +3,3 @@
 venv/
 __pycahce__/
 output/
-*.png
-*.jpg
